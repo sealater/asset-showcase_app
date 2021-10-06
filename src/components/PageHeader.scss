@@ -1,0 +1,46 @@
+// PageHeader.scss
+@use '../variables';
+
+.page-header {
+    padding: 0 12rem;
+    display: flex;
+
+    &__left {
+        margin-top: 2rem;
+        display: flex;
+        flex-direction: column;
+        flex-basis: 50%;
+        //justify-content: center;
+    }
+
+    &__right {
+        flex-basis: 50%;
+
+        & > img {
+            height: 440px;
+        }
+    }
+
+    &__title {
+        padding-right: 16rem;
+        margin-bottom: 0;
+    }
+
+    &__subtitle {
+        margin-top: 1rem;
+    }
+
+    &__cta {
+        padding: 0.4rem 1rem;
+        border-radius: 4px;
+        line-height: 3em;
+        color: variables.$foreground-light;
+        text-decoration: none;
+        background-color: variables.$primary-color;
+        transition: all linear 60ms;
+
+        &:hover {
+            background-color: variables.$primary-color-dark;
+        }
+    }
+}

@@ -1,0 +1,12 @@
+// App.scss
+@use 'global';
+
+.app {
+    display: flex;
+    flex-direction: column;
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+    }
+}

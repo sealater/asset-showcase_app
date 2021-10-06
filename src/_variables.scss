@@ -1,0 +1,22 @@
+// _variables.scss (partial)
+
+// Colors
+$grey-100: #707070;
+$grey-200: #606060;
+$grey-300: #505050; // Background
+$grey-400: #404040;
+$grey-500: #303030;
+
+$white-100: #FEFEFE; // Foreground
+$white-200: #EEEEEE;
+$white-300: #DEDEDE;
+
+$purple: #666AF6;
+
+$primary-color: $purple;
+$primary-color-dark: darken(desaturate($primary-color, 30%), 20%);
+
+$foreground-light: $white-100;
+$foreground-dark: $grey-300;
+$background-light: $white-100;
+$background-dark: $grey-300;
