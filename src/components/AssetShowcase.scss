@@ -1,6 +1,85 @@
 // AssetShowcase.scss
+@use '../variables';
 
 .asset-showcase {
     padding: 0 8em;
-    background-color: #cccccc;
+    display: grid;
+    grid-auto-rows: 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    background-color: variables.$white-200;
+}
+
+.asset {
+    position: relative;
+    margin: 2rem;
+    display: flex;
+    flex-direction: column;
+
+    &__image {
+        width: 24rem;
+        height: 24rem;
+        border-radius: 0.5rem;
+        background-color: variables.$white-300;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        transition: all linear 50ms;
+    }
+
+    &__overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: calc(100% - 4rem);
+        margin: 1rem;
+        display: flex;
+        color: variables.$foreground-light;
+        flex-direction: column;
+        opacity: 0;
+        transition: all linear 100ms;
+        cursor: pointer;
+
+        &:hover {
+            opacity: 1;
+        }
+
+        &:hover + .asset__image {
+            box-shadow: inset 0 0 10rem variables.$grey-500;
+        }
+    }
+
+    &__name {
+        margin-top: 0;
+    }
+
+    &__license {
+        flex-grow: 1;
+        margin-top: 0;
+        font-size: 0.8em;
+    }
+
+    &__license:before {
+        content: 'License: ';
+    }
+
+    &__description {
+        //margin-bottom: 5em;
+    }
+
+    &__info {
+        display: flex;
+
+        & > p {
+            flex-basis: 50%;
+        }
+    }
+
+    &__author {
+        text-align: left;
+    }
+
+    &__date {
+        text-align: right;
+    }
 }

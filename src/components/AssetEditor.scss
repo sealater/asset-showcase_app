@@ -1,0 +1,19 @@
+// AssetEditor.scss
+@use '../variables';
+
+.asset-editor {
+    padding: 0 24rem;
+    display: flex;
+    flex-grow: 1;
+
+    &__controls {
+        flex-basis: 75%;
+    }
+
+    &__list {
+        margin: 0;
+        flex-basis: 25%;
+        list-style: none;
+        background-color: variables.$white-200;
+    }
+}

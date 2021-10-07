@@ -14,10 +14,12 @@
     }
 
     &__right {
+        display: flex;
+        justify-content: center;
         flex-basis: 50%;
 
         & > img {
-            height: 440px;
+            height: 480px;
         }
     }
 
