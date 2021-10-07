@@ -20,7 +20,7 @@ class AssetEditor extends React.Component {
         };
 
         this.setWorkingAsset = this.setWorkingAsset.bind(this);
-        this.execXHTML = this.execXHTML.bind(this);
+        this.sendData = this.sendData.bind(this);
     }
 
     setWorkingAsset(id) {
@@ -54,39 +54,26 @@ class AssetEditor extends React.Component {
         this.setState(formValues);
     }
 
-    execXHTML(data) {
+
+    sendData(e) {
         const XHR = new XMLHttpRequest();
-        let urlEncodedData = "",
-            urlEncodedDataPairs = [],
-            name;
 
-        for (name in data) {
-            urlEncodedDataPairs.push(encodeURIComponent(name) + '=' + encodeURIComponent(data[name]));
-        }
+        // Bind the FormData object and the form element
+        const FD = new FormData(e.submitter);
 
-        urlEncodedData = urlEncodedDataPairs.join('&').replace(/%20/g, '+');
-
-        console.log(data);
-        alert(urlEncodedData);
-
-        XHR.addEventListener('load', function (event) {
-            alert('Yeah! Data sent and response loaded.');
-            console.log(event);
+        // Define what happens on successful data submission
+        XHR.addEventListener("load", function (event) {
+            alert(event.target.responseText);
         });
 
         // Define what happens in case of error
-        XHR.addEventListener('error', function (event) {
+        XHR.addEventListener("error", function (event) {
             alert('Oops! Something went wrong.');
         });
 
-        // Set up our request
         XHR.open('POST', 'http://52.86.154.61:3000/asset');
 
-        // Add the required HTTP header for form data POST requests
-        XHR.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
-        // Finally, send our data.
-        XHR.send(urlEncodedData);
+        XHR.send(FD);
     }
 
     componentDidMount() {
@@ -134,7 +121,7 @@ class AssetEditor extends React.Component {
             return (
                 <div className="asset-editor">
                     {/* id, name, description, author, license, source, submission_date */}
-                    <form action={formAction} method={formMethod} className="asset-editor__controls">
+                    <form onSubmit={this.sendData} action={formAction} method={formMethod} className="asset-editor__controls">
                         <h3>Asset Editor</h3>
                         {idMessage}
                         <label>Name</label><br />
@@ -154,7 +141,7 @@ class AssetEditor extends React.Component {
                         {assets.map(asset => (
                             <li><a href="#" onClick={() => this.setWorkingAsset(asset.id)} id={asset.id}>{asset.name}</a></li>
                         ))}
-                        <a href="#" onClick={() => this.execXHTML(assetData)}>Test</a>
+
                     </ul>
 
                 </div>
