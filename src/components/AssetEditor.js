@@ -15,29 +15,27 @@ class AssetEditor extends React.Component {
             author: "",
             license: "",
             source: "",
-            formAction: "http://52.86.154.61:3000/asset",
-            formMethod: "PUT"
+            action: "http://52.86.154.61:3000/asset",
+            method: 'POST'
         };
 
         this.setWorkingAsset = this.setWorkingAsset.bind(this);
         this.sendData = this.sendData.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.updateAssets = this.updateAssets.bind(this);
     }
 
     setWorkingAsset(id) {
         if (id !== null) {
-            var assetData;
-
             for (const asset of this.state.assets) {
-                if (asset.id == id) {
+                if (asset.id === id) {
                     let state = asset;
-                    state.formAction = "http://52.86.154.61:3000/asset/" + asset.id;
-                    state.formMethod = "PUT";
+                    state.action = "http://52.86.154.61:3000/asset/" + asset.id;
+                    state.method = 'PUT';
                     this.setState(state);
                     break;
                 }
             }
-
-            this.render()
         }
         else {
             this.setState({
@@ -48,32 +46,60 @@ class AssetEditor extends React.Component {
                 source: ""
             });
         }
+
+        this.setState({ state: this.state });
     }
 
-    updateStateValues(formValues) {
-        this.setState(formValues);
+    handleChange(e) {
+        this.setState({ [e.target.id]: e.target.value });
     }
-
 
     sendData(e) {
-        const XHR = new XMLHttpRequest();
 
-        // Bind the FormData object and the form element
-        const FD = new FormData(e.submitter);
+        if (e !== undefined)
+            e.preventDefault();
 
-        // Define what happens on successful data submission
-        XHR.addEventListener("load", function (event) {
-            alert(event.target.responseText);
-        });
+        const url = this.state.action;
+        const method = this.state.method;
 
-        // Define what happens in case of error
-        XHR.addEventListener("error", function (event) {
-            alert('Oops! Something went wrong.');
-        });
+        fetch(url, {
+            method: method,
+            body: JSON.stringify({
+                assetName: document.getElementById('name').value || document.getElementById('name').placeholder,
+                assetDescription: document.getElementById('description').value || document.getElementById('description').placeholder,
+                assetAuthor: document.getElementById('author').value || document.getElementById('author').placeholder,
+                assetLicense: document.getElementById('license').value || document.getElementById('license').placeholder,
+                assetSource: document.getElementById('source').value || document.getElementById('source').placeholder
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        }).then(
+            response => response.text() // .json(), etc.
+            // same as function(response) {return response.text();}
+        ).then(
+            html => { this.updateAssets() }
+        );
 
-        XHR.open('POST', 'http://52.86.154.61:3000/asset');
 
-        XHR.send(FD);
+    }
+
+    updateAssets() {
+        fetch("http://52.86.154.61:3000/asset")
+            .then(res => res.json())
+            .then((result) => {
+                this.setState({
+                    isLoaded: true,
+                    assets: result
+                });
+            },
+                (error) => {
+                    this.setState({
+                        isLoaded: true,
+                        error
+                    });
+                });
     }
 
     componentDidMount() {
@@ -91,23 +117,21 @@ class AssetEditor extends React.Component {
                         error
                     });
                 });
+
+        if (this.state.id == null) {
+            this.setState({
+                name: "",
+                description: "",
+                author: "",
+                license: "",
+                source: ""
+            });
+        }
     }
 
     render() {
         const { error, isLoaded, assets, formAction, formMethod } = this.state;
         let idMessage;
-
-        let assetData = {
-            id: this.state.id,
-            name: this.state.name,
-            description: this.state.description,
-            author: this.state.author,
-            source: this.state.source
-        };
-
-        let formState = {
-
-        }
 
         if (this.state.id !== null) {
             idMessage = <h4>Editing Post Id {this.state.id}</h4>;
@@ -121,20 +145,21 @@ class AssetEditor extends React.Component {
             return (
                 <div className="asset-editor">
                     {/* id, name, description, author, license, source, submission_date */}
-                    <form onSubmit={this.sendData} action={formAction} method={formMethod} className="asset-editor__controls">
+                    <form id="asset-editor" onSubmit={this.sendData} action={formAction} method={formMethod} className="asset-editor__controls">
                         <h3>Asset Editor</h3>
                         {idMessage}
                         <label>Name</label><br />
-                        <input type="text" id="name" name="assetName" placeholder={this.state.name} /><br />
+                        <input type="text" id="name" name="assetName" placeholder={this.state.id ? this.state.name : ""} onChange={this.handleChange} /><br />
                         <label>Description</label><br />
-                        <input type="text" id="description" name="assetDescription" placeholder={this.state.description} /><br />
+                        <input type="text" id="description" name="assetDescription" placeholder={this.state.id ? this.state.description : ""} onChange={this.handleChange} /><br />
                         <label>Author</label><br />
-                        <input type="text" id="author" name="assetAuthor" placeholder={this.state.author} /><br />
+                        <input type="text" id="author" name="assetAuthor" placeholder={this.state.id ? this.state.author : ""} onChange={this.handleChange} /><br />
                         <label>License</label><br />
-                        <input type="text" id="license" name="assetLicense" placeholder={this.state.license} /><br />
+                        <input type="text" id="license" name="assetLicense" placeholder={this.state.id ? this.state.license : ""} onChange={this.handleChange} /><br />
                         <label>Image URL</label><br />
-                        <input type="text" id="source" name="assetSource" placeholder={this.state.source} /><br />
+                        <input type="text" id="source" name="assetSource" placeholder={this.state.id ? this.state.source : ""} onChange={this.handleChange} /><br />
                         <input type="submit" id="submit" value="Submit" />
+                        <a href="#" onClick={() => { if (this.state.id !== null) { this.setState({ method: 'DELETE' }); this.setState({ id: null }); this.updateAssets(); this.setState({ action: 'http://52.86.154.61:3000/asset', method: 'DELETE' }); } this.sendData(); this.render() }}>Delete</a>
                     </form>
                     <ul className="asset-editor__list">
                         <h3>Asset Selection</h3>
