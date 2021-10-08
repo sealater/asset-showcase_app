@@ -55,9 +55,6 @@ class AssetEditor extends React.Component {
     }
 
     sendData(e) {
-
-        alert(this.state.method);
-
         if (e !== undefined)
             e.preventDefault();
 
