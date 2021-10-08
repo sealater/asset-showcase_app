@@ -56,6 +56,8 @@ class AssetEditor extends React.Component {
 
     sendData(e) {
 
+        alert(this.state.method);
+
         if (e !== undefined)
             e.preventDefault();
 
@@ -134,7 +136,7 @@ class AssetEditor extends React.Component {
         let idMessage;
 
         if (this.state.id !== null) {
-            idMessage = <h4>Editing Post Id {this.state.id}</h4>;
+            idMessage = <h5>Editing Post Id {this.state.id}</h5>;
         }
 
         if (error) {
@@ -159,14 +161,32 @@ class AssetEditor extends React.Component {
                         <label>Image URL</label><br />
                         <input type="text" id="source" name="assetSource" placeholder={this.state.id ? this.state.source : ""} onChange={this.handleChange} /><br />
                         <input type="submit" id="submit" value="Submit" />
-                        <a href="#" onClick={() => { if (this.state.id !== null) { this.setState({ method: 'DELETE' }); this.setState({ id: null }); this.updateAssets(); this.setState({ action: 'http://52.86.154.61:3000/asset', method: 'DELETE' }); } this.sendData(); this.render() }}>Delete</a>
+                        <a href="#" onClick={() => {
+                            if (this.state.id !== null) {
+                                this.setState({ method: 'DELETE' });
+                                this.sendData();
+                                this.setState({ id: null, action: 'http://52.86.154.61:3000/asset', method: 'POST' });
+                            }
+                        }}>Delete</a>
                     </form>
                     <ul className="asset-editor__list">
                         <h3>Asset Selection</h3>
                         {assets.map(asset => (
-                            <li><a href="#" onClick={() => this.setWorkingAsset(asset.id)} id={asset.id}>{asset.name}</a></li>
+                            <a href="#" onClick={() => this.setWorkingAsset(asset.id)} id={asset.id}><li>{asset.name}</li></a>
                         ))}
-
+                        <a className="create-button" href="#" onClick={() => {
+                            this.setState({
+                                id: null,
+                                name: "",
+                                description: "",
+                                author: "",
+                                license: "",
+                                source: "",
+                                action: 'http://52.86.154.61:3000/asset',
+                                method: 'POST'
+                            });
+                            for (let el of document.getElementById('asset-editor').elements) el.value = null;
+                        }}><li>+ Create a new asset</li></a>
                     </ul>
 
                 </div>
